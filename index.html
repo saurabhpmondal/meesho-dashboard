@@ -4,41 +4,79 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Meesho Sales & Ads Dashboard</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="./css/reset.css">
-    <link rel="stylesheet" href="./css/variables.css">
-    <link rel="stylesheet" href="./css/layout.css">
-    <link rel="stylesheet" href="./css/dashboard.css">
-    <link rel="stylesheet" href="./css/responsive.css">
+    <title>
+        Meesho Sales & Ads Dashboard
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="./css/reset.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./css/layout.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./css/responsive.css"
+    >
 
 </head>
 
 <body>
 
-    <!-- Loading Overlay -->
+    <!-- ==========================
+         LOADING
+    =========================== -->
 
-    <div id="loadingOverlay" class="loading-overlay">
+    <div
+        id="loadingOverlay"
+        class="loading-overlay"
+    >
 
         <div class="loading-card">
 
             <div class="loader"></div>
 
-            <h3>Loading Dashboard</h3>
+            <h3>
+                Loading Dashboard
+            </h3>
 
-            <p>Please wait...</p>
+            <p>
+                Fetching Sales & Ads Data
+            </p>
 
         </div>
 
     </div>
 
-    <!-- App -->
+    <!-- ==========================
+         APP
+    =========================== -->
 
-    <div id="app" class="app-container">
+    <div class="app-container">
 
-        <!-- Header -->
+        <!-- ======================
+             HEADER
+        ======================= -->
 
         <header class="app-header">
 
@@ -56,17 +94,17 @@
 
                 <div>
 
-                    <h1 class="app-title">
+                    <div class="app-title">
 
                         Meesho Sales & Ads Dashboard
 
-                    </h1>
+                    </div>
 
-                    <p class="app-subtitle">
+                    <div class="app-subtitle">
 
-                        Sales Performance Analytics
+                        Sales Analytics • Ads Analytics • Planning
 
-                    </p>
+                    </div>
 
                 </div>
 
@@ -76,16 +114,17 @@
 
                 <div class="refresh-info">
 
-                    <span class="refresh-label">
+                    <div class="refresh-label">
 
                         Last Refresh
 
-                    </span>
+                    </div>
 
-                    <span id="lastRefresh">
+                    <div id="lastRefresh">
 
-                        --
-                    </span>
+                        -
+
+                    </div>
 
                 </div>
 
@@ -93,13 +132,13 @@
 
         </header>
 
-        <!-- Filters -->
+        <!-- ======================
+             FILTERS
+        ======================= -->
 
         <section class="filter-section">
 
             <div class="filter-grid">
-
-                <!-- Month -->
 
                 <div class="filter-item">
 
@@ -109,19 +148,13 @@
 
                     </label>
 
-                    <select id="monthFilter">
-
-                        <option value="all">
-
-                            All Months
-
-                        </option>
+                    <select
+                        id="monthFilter"
+                    >
 
                     </select>
 
                 </div>
-
-                <!-- Year -->
 
                 <div class="filter-item">
 
@@ -131,19 +164,13 @@
 
                     </label>
 
-                    <select id="yearFilter">
-
-                        <option value="all">
-
-                            All Years
-
-                        </option>
+                    <select
+                        id="yearFilter"
+                    >
 
                     </select>
 
                 </div>
-
-                <!-- From Date -->
 
                 <div class="filter-item">
 
@@ -160,8 +187,6 @@
 
                 </div>
 
-                <!-- To Date -->
-
                 <div class="filter-item">
 
                     <label>
@@ -177,9 +202,9 @@
 
                 </div>
 
-                <!-- Search -->
-
-                <div class="filter-item search-box">
+                <div
+                    class="filter-item search-box"
+                >
 
                     <label>
 
@@ -190,7 +215,7 @@
                     <input
                         type="text"
                         id="globalSearch"
-                        placeholder="Order, Catalog, SKU, State, Packet..."
+                        placeholder="Search Sub Order, Catalog, SKU, State, Packet ID..."
                     >
 
                 </div>
@@ -199,23 +224,28 @@
 
         </section>
 
-        <!-- KPI Cards -->
+        <!-- ======================
+             KPI
+        ======================= -->
 
         <section class="kpi-section">
 
-            <div id="kpiCards" class="kpi-grid">
-
-                <!-- Generated by JS -->
+            <div
+                id="kpiCards"
+                class="kpi-grid"
+            >
 
             </div>
 
         </section>
 
-        <!-- Reports -->
+        <!-- ======================
+             REPORTS
+        ======================= -->
 
         <main class="dashboard-content">
 
-            <!-- Daily Sales -->
+            <!-- DAILY SALES -->
 
             <section class="report-card">
 
@@ -223,7 +253,7 @@
 
                     <h2>
 
-                        Daily Sales
+                        Daily Sales Performance
 
                     </h2>
 
@@ -238,7 +268,7 @@
 
             </section>
 
-            <!-- Monthly Performance -->
+            <!-- MONTHLY -->
 
             <section class="report-card">
 
@@ -246,7 +276,7 @@
 
                     <h2>
 
-                        Monthly Performance
+                        Month Wise Performance
 
                     </h2>
 
@@ -261,7 +291,7 @@
 
             </section>
 
-            <!-- Top States -->
+            <!-- STATES -->
 
             <section class="report-card">
 
@@ -288,9 +318,14 @@
 
     </div>
 
-    <!-- Application -->
+    <!-- ==========================
+         APP BOOTSTRAP
+    =========================== -->
 
-    <script type="module" src="./js/core/app.js"></script>
+    <script
+        type="module"
+        src="./js/core/app.js"
+    ></script>
 
 </body>
 
