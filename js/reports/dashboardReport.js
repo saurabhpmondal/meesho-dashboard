@@ -34,6 +34,12 @@ import {
 
 import {
 
+    buildMonthlyAdsPerformance
+
+} from '../engines/dashboard/monthlyAdsPerformanceEngine.js';
+
+import {
+
     renderKPICards
 
 } from '../components/kpiCards.js';
@@ -55,12 +61,6 @@ import {
     renderTopStatesReport
 
 } from './topStatesReport.js';
-
-import {
-
-    buildMonthlyAdsPerformance
-
-} from '../engines/dashboard/monthlyAdsPerformanceEngine.js';
 
 import {
 
@@ -91,7 +91,7 @@ export async function renderDashboard() {
     try {
 
         /* ==============================
-           APPLY FILTERS
+           APPLY GLOBAL FILTERS
         ============================== */
 
         applyFilters();
@@ -108,8 +108,10 @@ export async function renderDashboard() {
 
         buildTopStates();
 
+        buildMonthlyAdsPerformance();
+
         /* ==============================
-           RENDER COMPONENTS
+           RENDER REPORTS
         ============================== */
 
         renderKPICards();
@@ -119,6 +121,8 @@ export async function renderDashboard() {
         renderMonthlyPerformanceReport();
 
         renderTopStatesReport();
+
+        renderMonthlyAdsPerformanceReport();
 
     } catch (error) {
 
@@ -135,7 +139,7 @@ export async function renderDashboard() {
 }
 
 /* ==========================================
-   REFRESH
+   REFRESH DASHBOARD
 ========================================== */
 
 export async function refreshDashboardReport() {
