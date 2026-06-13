@@ -1,0 +1,388 @@
+/* ==========================================
+   DASHBOARD SPECIFIC STYLES
+========================================== */
+
+/* ==========================================
+   KPI CARD POLISH
+========================================== */
+
+.kpi-card {
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+.kpi-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    right: 0;
+
+    width: 80px;
+
+    height: 80px;
+
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.03);
+
+    transform: translate(30%, -30%);
+
+}
+
+.kpi-label {
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+}
+
+.kpi-value {
+
+    line-height: 1.2;
+
+    margin-bottom: 6px;
+
+}
+
+.kpi-subtext {
+
+    font-size: var(--font-xs);
+
+    color: var(--text-muted);
+
+}
+
+/* ==========================================
+   REPORT CARD IMPROVEMENTS
+========================================== */
+
+.report-card {
+
+    transition: var(--transition);
+
+}
+
+.report-card:hover {
+
+    box-shadow: var(--shadow-lg);
+
+}
+
+.report-header {
+
+    background: linear-gradient(
+        to right,
+        #ffffff,
+        #fafafa
+    );
+
+}
+
+.report-header h2 {
+
+    color: var(--text-primary);
+
+}
+
+/* ==========================================
+   TABLE IMPROVEMENTS
+========================================== */
+
+.report-table {
+
+    min-width: 1000px;
+
+}
+
+.report-table thead th {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 5;
+
+    white-space: nowrap;
+
+}
+
+.report-table tbody td {
+
+    white-space: nowrap;
+
+}
+
+.report-table tbody tr:nth-child(even) {
+
+    background: #fcfcfc;
+
+}
+
+.report-table tbody tr:hover {
+
+    background: #f8fafc;
+
+}
+
+/* ==========================================
+   NUMBER ALIGNMENT
+========================================== */
+
+.number-cell {
+
+    text-align: right;
+
+    font-variant-numeric: tabular-nums;
+
+}
+
+.center-cell {
+
+    text-align: center;
+
+}
+
+/* ==========================================
+   KPI COLOR HELPERS
+========================================== */
+
+.text-gmv {
+
+    color: var(--kpi-gmv);
+
+}
+
+.text-units {
+
+    color: var(--kpi-units);
+
+}
+
+.text-orders {
+
+    color: var(--kpi-orders);
+
+}
+
+.text-asp {
+
+    color: var(--kpi-asp);
+
+}
+
+.text-spend {
+
+    color: var(--kpi-spend);
+
+}
+
+.text-revenue {
+
+    color: var(--kpi-revenue);
+
+}
+
+.text-roi {
+
+    color: var(--kpi-roi);
+
+}
+
+.text-ctr {
+
+    color: var(--kpi-ctr);
+
+}
+
+.text-cvr {
+
+    color: var(--kpi-cvr);
+
+}
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.empty-state {
+
+    min-height: 250px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    color: var(--text-muted);
+
+}
+
+.empty-state-title {
+
+    font-size: var(--font-lg);
+
+    font-weight: var(--weight-semibold);
+
+}
+
+.empty-state-description {
+
+    font-size: var(--font-sm);
+
+}
+
+/* ==========================================
+   REPORT PLACEHOLDER
+========================================== */
+
+.report-placeholder {
+
+    padding: 40px;
+
+    text-align: center;
+
+    color: var(--text-muted);
+
+}
+
+/* ==========================================
+   STATUS BADGES
+========================================== */
+
+.badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 4px 10px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+.badge-success {
+
+    background: rgba(22, 163, 74, 0.1);
+
+    color: var(--success);
+
+}
+
+.badge-danger {
+
+    background: rgba(220, 38, 38, 0.1);
+
+    color: var(--danger);
+
+}
+
+.badge-neutral {
+
+    background: rgba(100, 116, 139, 0.1);
+
+    color: var(--trend-neutral);
+
+}
+
+/* ==========================================
+   TABLE SCROLL
+========================================== */
+
+.table-container {
+
+    scrollbar-width: thin;
+
+}
+
+.table-container::-webkit-scrollbar {
+
+    height: 8px;
+
+}
+
+.table-container::-webkit-scrollbar-thumb {
+
+    background: #cbd5e1;
+
+    border-radius: 999px;
+
+}
+
+/* ==========================================
+   FILTER VISUAL IMPROVEMENT
+========================================== */
+
+.filter-item select:hover,
+.filter-item input:hover {
+
+    border-color: #cbd5e1;
+
+}
+
+.filter-item select:focus,
+.filter-item input:focus {
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+
+}
+
+/* ==========================================
+   SECTION SPACING
+========================================== */
+
+.dashboard-content {
+
+    padding-bottom: 40px;
+
+}
+
+/* ==========================================
+   ANIMATIONS
+========================================== */
+
+.fade-in {
+
+    animation: fadeIn 0.25s ease-in-out;
+
+}
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(8px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+
+    }
+
+}
