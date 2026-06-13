@@ -124,6 +124,10 @@ export const SEARCH_FIELDS = [
 
     'packet_id',
 
+    'product_name',
+
+    'size',
+
     /* Future Ready */
 
     'erp_sku',
@@ -151,12 +155,6 @@ export const KPI_CONFIG = [
     },
 
     {
-        key: 'orders',
-        label: 'Orders',
-        className: 'kpi-orders'
-    },
-
-    {
         key: 'asp',
         label: 'ASP',
         className: 'kpi-asp'
@@ -169,27 +167,9 @@ export const KPI_CONFIG = [
     },
 
     {
-        key: 'revenue',
-        label: 'Revenue',
-        className: 'kpi-revenue'
-    },
-
-    {
         key: 'roi',
         label: 'ROI',
         className: 'kpi-roi'
-    },
-
-    {
-        key: 'ctr',
-        label: 'CTR',
-        className: 'kpi-ctr'
-    },
-
-    {
-        key: 'cvr',
-        label: 'CVR',
-        className: 'kpi-cvr'
     }
 
 ];
@@ -204,7 +184,15 @@ export const REPORTS = {
 
     MONTHLY_PERFORMANCE: 'monthlyPerformance',
 
-    TOP_STATES: 'topStates'
+    TOP_STATES: 'topStates',
+
+    /* Future Reports */
+
+    SKU_ANALYSIS: 'skuAnalysis',
+
+    CATALOG_ANALYSIS: 'catalogAnalysis',
+
+    RETURNS_ANALYSIS: 'returnsAnalysis'
 
 };
 
@@ -229,6 +217,12 @@ export const SALES_COLUMNS = {
     SKU:
         'sku',
 
+    PRODUCT_NAME:
+        'product_name',
+
+    SIZE:
+        'size',
+
     QUANTITY:
         'quantity',
 
@@ -236,7 +230,10 @@ export const SALES_COLUMNS = {
         'supplier_listed_price_(incl._gst_+_commission)',
 
     PACKET_ID:
-        'packet_id'
+        'packet_id',
+
+    CREDIT_REASON:
+        'reason_for_credit_entry'
 
 };
 
