@@ -70,6 +70,8 @@ export const state = {
 
     topStates: [],
 
+    monthlyAdsPerformance: [],
+
     /* ======================================
        APP STATUS
     ====================================== */
@@ -246,6 +248,14 @@ export function setTopStates(data) {
 
 }
 
+export function setMonthlyAdsPerformance(data) {
+
+    state.monthlyAdsPerformance = Array.isArray(data)
+        ? data
+        : [];
+
+}
+
 /* ==========================================
    LOADING
 ========================================== */
@@ -309,6 +319,8 @@ export function resetDashboardData() {
     state.monthlyPerformance = [];
 
     state.topStates = [];
+
+    state.monthlyAdsPerformance = [];
 
 }
 
