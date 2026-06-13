@@ -139,17 +139,23 @@ export function buildDailySales() {
 
             )
 
+            /* ==========================
+               OLDEST → NEWEST
+            ========================== */
+
             .sort(
 
                 (a, b) =>
 
                     new Date(
-                        b.date
-                    ) -
+                        a.date
+                    ).getTime()
+
+                    -
 
                     new Date(
-                        a.date
-                    )
+                        b.date
+                    ).getTime()
 
             );
 
@@ -187,7 +193,7 @@ function applyTrendLogic(
             rows[i];
 
         const previous =
-            rows[i + 1];
+            rows[i - 1];
 
         if (!previous) {
 
