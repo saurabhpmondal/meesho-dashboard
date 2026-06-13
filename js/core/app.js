@@ -23,6 +23,7 @@ import {
 import {
 
     initializeRegistry,
+    registerReport,
     refreshDashboard,
     hideLoading,
     showLoading
@@ -43,27 +44,28 @@ import {
 
 } from '../utils/dateUtils.js';
 
+import {
+
+    dashboardReport
+
+} from '../reports/dashboardReport.js';
+
 /* ==========================================
-   DOM ELEMENTS
+   DOM
 ========================================== */
 
-const monthFilter =
-    document.getElementById('monthFilter');
+let monthFilter;
 
-const yearFilter =
-    document.getElementById('yearFilter');
+let yearFilter;
 
-const fromDate =
-    document.getElementById('fromDate');
+let fromDate;
 
-const toDate =
-    document.getElementById('toDate');
+let toDate;
 
-const globalSearch =
-    document.getElementById('globalSearch');
+let globalSearch;
 
 /* ==========================================
-   INITIALIZE APP
+   INIT APP
 ========================================== */
 
 async function initializeApp() {
@@ -72,8 +74,10 @@ async function initializeApp() {
 
         showLoading();
 
+        cacheDom();
+
         console.log(
-            'Loading Sales CSV...'
+            'Loading Sales Data...'
         );
 
         const salesData =
@@ -82,7 +86,7 @@ async function initializeApp() {
             );
 
         console.log(
-            'Loading Ads CSV...'
+            'Loading Ads Data...'
         );
 
         const adsData =
@@ -122,6 +126,10 @@ async function initializeApp() {
 
         initializeEvents();
 
+        initializeRegistry();
+
+        registerDashboard();
+
         setInitialized(
             true
         );
@@ -130,23 +138,21 @@ async function initializeApp() {
             new Date()
         );
 
-        initializeRegistry();
-
         await refreshDashboard();
 
         console.log(
-            'Dashboard Initialized'
+            'Dashboard Ready'
         );
 
     } catch (error) {
 
         console.error(
-            'Initialization Failed',
+            'App Initialization Failed',
             error
         );
 
         alert(
-            'Failed to load dashboard data'
+            'Failed to load dashboard data.'
         );
 
     } finally {
@@ -158,51 +164,98 @@ async function initializeApp() {
 }
 
 /* ==========================================
-   FILTER DROPDOWNS
+   CACHE DOM
+========================================== */
+
+function cacheDom() {
+
+    monthFilter =
+        document.getElementById(
+            'monthFilter'
+        );
+
+    yearFilter =
+        document.getElementById(
+            'yearFilter'
+        );
+
+    fromDate =
+        document.getElementById(
+            'fromDate'
+        );
+
+    toDate =
+        document.getElementById(
+            'toDate'
+        );
+
+    globalSearch =
+        document.getElementById(
+            'globalSearch'
+        );
+
+}
+
+/* ==========================================
+   REGISTER REPORTS
+========================================== */
+
+function registerDashboard() {
+
+    registerReport(
+
+        'dashboard',
+
+        dashboardReport
+
+    );
+
+}
+
+/* ==========================================
+   FILTER INIT
 ========================================== */
 
 function initializeFilters(
+
     salesData
+
 ) {
 
-    const monthMap =
+    const months =
         new Map();
 
-    const yearSet =
+    const years =
         new Set();
 
-    salesData.forEach(row => {
+    salesData.forEach(
 
-        if (
-            row.month &&
-            row.monthName
-        ) {
+        row => {
 
-            monthMap.set(
+            months.set(
+
                 row.month,
+
                 row.monthName
+
             );
 
-        }
+            years.add(
 
-        if (
-            row.year
-        ) {
-
-            yearSet.add(
                 row.year
+
             );
 
         }
 
-    });
+    );
 
     buildMonthFilter(
-        monthMap
+        months
     );
 
     buildYearFilter(
-        yearSet
+        years
     );
 
     const latest =
@@ -210,27 +263,27 @@ function initializeFilters(
             salesData
         );
 
-    if (
-        latest
-    ) {
+    if (!latest) {
 
-        monthFilter.value =
-            latest.month;
-
-        yearFilter.value =
-            latest.year;
-
-        updateFilters({
-
-            month:
-                latest.month,
-
-            year:
-                latest.year
-
-        });
+        return;
 
     }
+
+    monthFilter.value =
+        latest.month;
+
+    yearFilter.value =
+        latest.year;
+
+    updateFilters({
+
+        month:
+            latest.month,
+
+        year:
+            latest.year
+
+    });
 
 }
 
@@ -239,18 +292,25 @@ function initializeFilters(
 ========================================== */
 
 function buildMonthFilter(
+
     monthMap
+
 ) {
 
-    const sortedMonths =
+    const months =
         [...monthMap.entries()]
+
             .sort(
+
                 (a, b) =>
+
                     a[0] - b[0]
+
             );
 
-    sortedMonths.forEach(
-        ([value, label]) => {
+    months.forEach(
+
+        ([month, label]) => {
 
             const option =
                 document.createElement(
@@ -258,7 +318,7 @@ function buildMonthFilter(
                 );
 
             option.value =
-                value;
+                month;
 
             option.textContent =
                 label;
@@ -278,17 +338,24 @@ function buildMonthFilter(
 ========================================== */
 
 function buildYearFilter(
+
     yearSet
+
 ) {
 
     const years =
         [...yearSet]
+
             .sort(
+
                 (a, b) =>
+
                     b - a
+
             );
 
     years.forEach(
+
         year => {
 
             const option =
@@ -313,7 +380,7 @@ function buildYearFilter(
 }
 
 /* ==========================================
-   FILTER EVENTS
+   EVENTS
 ========================================== */
 
 function initializeEvents() {
@@ -355,8 +422,11 @@ function initializeEvents() {
         'input',
 
         debounce(
+
             handleFilterChange,
+
             300
+
         )
 
     );
@@ -364,7 +434,7 @@ function initializeEvents() {
 }
 
 /* ==========================================
-   FILTER HANDLER
+   FILTER CHANGE
 ========================================== */
 
 async function handleFilterChange() {
@@ -397,22 +467,34 @@ async function handleFilterChange() {
 ========================================== */
 
 function debounce(
-    fn,
+
+    callback,
+
     delay = 300
+
 ) {
 
-    let timer;
+    let timeout;
 
     return (...args) => {
 
         clearTimeout(
-            timer
+            timeout
         );
 
-        timer =
+        timeout =
             setTimeout(
-                () => fn(...args),
+
+                () => {
+
+                    callback(
+                        ...args
+                    );
+
+                },
+
                 delay
+
             );
 
     };
