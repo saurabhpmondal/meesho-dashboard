@@ -56,6 +56,18 @@ import {
 
 } from './topStatesReport.js';
 
+import {
+
+    buildMonthlyAdsPerformance
+
+} from '../engines/dashboard/monthlyAdsPerformanceEngine.js';
+
+import {
+
+    renderMonthlyAdsPerformanceReport
+
+} from './monthlyAdsPerformanceReport.js';
+
 /* ==========================================
    DASHBOARD REPORT
 ========================================== */
