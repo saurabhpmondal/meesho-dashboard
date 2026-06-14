@@ -518,3 +518,27 @@ body {
     }
 
 }
+
+.kpi-growth {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.kpi-growth-note {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.growth-up {
+    color: #16a34a;
+}
+
+.growth-down {
+    color: #dc2626;
+}
+
+.growth-neutral {
+    color: #64748b;
+}
