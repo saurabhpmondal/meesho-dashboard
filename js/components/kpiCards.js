@@ -54,6 +54,22 @@ export function renderKPICards() {
                             config.key
                         ];
 
+                    const growth =
+                        getGrowthValue(
+
+                            config.key,
+
+                            kpis
+
+                        );
+
+                    const growthHtml =
+                        buildGrowthHTML(
+
+                            growth
+
+                        );
+
                     return `
 
                         <div class="kpi-card ${config.className}">
@@ -76,6 +92,8 @@ export function renderKPICards() {
 
                             </div>
 
+                            ${growthHtml}
+
                         </div>
 
                     `;
@@ -85,6 +103,159 @@ export function renderKPICards() {
             )
 
             .join('');
+
+}
+
+/* ==========================================
+   KPI GROWTH MAPPING
+========================================== */
+
+function getGrowthValue(
+
+    key,
+    kpis
+
+) {
+
+    const map = {
+
+        gmv:
+            kpis.gmvGrowth,
+
+        units:
+            kpis.unitsGrowth,
+
+        asp:
+            kpis.aspGrowth,
+
+        adSpend:
+            kpis.adSpendGrowth,
+
+        roi:
+            kpis.roiGrowth
+
+    };
+
+    return map[key];
+
+}
+
+/* ==========================================
+   BUILD GROWTH HTML
+========================================== */
+
+function buildGrowthHTML(
+
+    growth
+
+) {
+
+    if (
+
+        growth === undefined ||
+
+        growth === null
+
+    ) {
+
+        return '';
+
+    }
+
+    if (
+
+        growth === 'NEW'
+
+    ) {
+
+        return `
+
+            <div class="kpi-growth growth-up">
+
+                ▲ NEW
+
+            </div>
+
+            <div class="kpi-growth-note">
+
+                vs previous month
+
+            </div>
+
+        `;
+
+    }
+
+    const numericGrowth =
+        Number(growth);
+
+    if (
+
+        numericGrowth > 0
+
+    ) {
+
+        return `
+
+            <div class="kpi-growth growth-up">
+
+                ▲ ${numericGrowth.toFixed(1)}%
+
+            </div>
+
+            <div class="kpi-growth-note">
+
+                vs previous month
+
+            </div>
+
+        `;
+
+    }
+
+    if (
+
+        numericGrowth < 0
+
+    ) {
+
+        return `
+
+            <div class="kpi-growth growth-down">
+
+                ▼ ${Math.abs(
+
+                    numericGrowth
+
+                ).toFixed(1)}%
+
+            </div>
+
+            <div class="kpi-growth-note">
+
+                vs previous month
+
+            </div>
+
+        `;
+
+    }
+
+    return `
+
+        <div class="kpi-growth growth-neutral">
+
+            ■ 0.0%
+
+        </div>
+
+        <div class="kpi-growth-note">
+
+            vs previous month
+
+        </div>
+
+    `;
 
 }
 
@@ -132,85 +303,15 @@ export function showKPILoading() {
 
     container.innerHTML = `
 
-        <div class="kpi-card kpi-gmv">
+        <div class="kpi-card">Loading...</div>
 
-            <div class="kpi-label">
+        <div class="kpi-card">Loading...</div>
 
-                Loading...
+        <div class="kpi-card">Loading...</div>
 
-            </div>
+        <div class="kpi-card">Loading...</div>
 
-            <div class="kpi-value">
-
-                ...
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card kpi-units">
-
-            <div class="kpi-label">
-
-                Loading...
-
-            </div>
-
-            <div class="kpi-value">
-
-                ...
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card kpi-asp">
-
-            <div class="kpi-label">
-
-                Loading...
-
-            </div>
-
-            <div class="kpi-value">
-
-                ...
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card kpi-spend">
-
-            <div class="kpi-label">
-
-                Loading...
-
-            </div>
-
-            <div class="kpi-value">
-
-                ...
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card kpi-roi">
-
-            <div class="kpi-label">
-
-                Loading...
-
-            </div>
-
-            <div class="kpi-value">
-
-                ...
-
-            </div>
-
-        </div>
+        <div class="kpi-card">Loading...</div>
 
     `;
 
@@ -235,33 +336,6 @@ export function showEmptyKPIs() {
 
     }
 
-    container.innerHTML = `
-
-        <div class="kpi-card kpi-gmv">
-            <div class="kpi-label">GMV</div>
-            <div class="kpi-value">₹0</div>
-        </div>
-
-        <div class="kpi-card kpi-units">
-            <div class="kpi-label">Units</div>
-            <div class="kpi-value">0</div>
-        </div>
-
-        <div class="kpi-card kpi-asp">
-            <div class="kpi-label">ASP</div>
-            <div class="kpi-value">₹0</div>
-        </div>
-
-        <div class="kpi-card kpi-spend">
-            <div class="kpi-label">Ad Spend</div>
-            <div class="kpi-value">₹0</div>
-        </div>
-
-        <div class="kpi-card kpi-roi">
-            <div class="kpi-label">ROI</div>
-            <div class="kpi-value">0x</div>
-        </div>
-
-    `;
+    container.innerHTML = '';
 
 }
