@@ -33,6 +33,9 @@ export function buildKPIs() {
     const ads =
         state.filteredAdsData || [];
 
+    const filters =
+        state.filters || {};
+
     /* ==============================
        SALES KPIs
     ============================== */
@@ -94,9 +97,6 @@ export function buildKPIs() {
 
     /* ==============================
        ADS KPIs
-
-       Filtered ads already contains
-       selected month/year data.
     ============================== */
 
     const adsRow =
@@ -106,37 +106,27 @@ export function buildKPIs() {
 
     const adSpend =
         Number(
-
             adsRow?.ads_spend || 0
-
         );
 
     const revenue =
         Number(
-
             adsRow?.revenue || 0
-
         );
 
     const views =
         Number(
-
             adsRow?.views || 0
-
         );
 
     const clicks =
         Number(
-
             adsRow?.clicks || 0
-
         );
 
     const adOrders =
         Number(
-
             adsRow?.orders || 0
-
         );
 
     const roi =
@@ -173,12 +163,191 @@ export function buildKPIs() {
         );
 
     /* ==============================
+       PREVIOUS MONTH
+    ============================== */
+
+    const currentMonth =
+        Number(
+            filters.month
+        );
+
+    const currentYear =
+        Number(
+            filters.year
+        );
+
+    let previousMonth =
+        currentMonth - 1;
+
+    let previousYear =
+        currentYear;
+
+    if (
+
+        previousMonth === 0
+
+    ) {
+
+        previousMonth = 12;
+
+        previousYear =
+            currentYear - 1;
+
+    }
+
+    /* ==============================
+       PREVIOUS SALES
+    ============================== */
+
+    const previousSales =
+        (state.salesData || [])
+
+            .filter(
+
+                row =>
+
+                    Number(
+                        row.month
+                    ) ===
+                    previousMonth
+
+                    &&
+
+                    Number(
+                        row.year
+                    ) ===
+                    previousYear
+
+            );
+
+    const previousGMV =
+        previousSales.reduce(
+
+            (total, row) =>
+
+                total +
+
+                Number(
+                    row.gmv || 0
+                ),
+
+            0
+
+        );
+
+    const previousUnits =
+        previousSales.reduce(
+
+            (total, row) =>
+
+                total +
+
+                Number(
+                    row.quantity || 0
+                ),
+
+            0
+
+        );
+
+    const previousASP =
+        calculateASP(
+
+            previousGMV,
+
+            previousUnits
+
+        );
+
+    /* ==============================
+       PREVIOUS ADS
+    ============================== */
+
+    const previousAds =
+        (state.adsData || [])
+
+            .find(
+
+                row =>
+
+                    Number(
+                        row.month
+                    ) ===
+                    previousMonth
+
+                    &&
+
+                    Number(
+                        row.year
+                    ) ===
+                    previousYear
+
+            );
+
+    const previousAdSpend =
+        Number(
+            previousAds?.ads_spend || 0
+        );
+
+    const previousROI =
+        Number(
+            previousAds?.roi || 0
+        );
+
+    /* ==============================
+       GROWTH
+    ============================== */
+
+    const gmvGrowth =
+        calculateGrowth(
+
+            gmv,
+
+            previousGMV
+
+        );
+
+    const unitsGrowth =
+        calculateGrowth(
+
+            units,
+
+            previousUnits
+
+        );
+
+    const aspGrowth =
+        calculateGrowth(
+
+            asp,
+
+            previousASP
+
+        );
+
+    const adSpendGrowth =
+        calculateGrowth(
+
+            adSpend,
+
+            previousAdSpend
+
+        );
+
+    const roiGrowth =
+        calculateGrowth(
+
+            roi,
+
+            previousROI
+
+        );
+
+    /* ==============================
        SAVE STATE
     ============================== */
 
     const kpis = {
-
-        /* KPI Cards */
 
         gmv,
 
@@ -190,7 +359,15 @@ export function buildKPIs() {
 
         roi,
 
-        /* Future Reports */
+        gmvGrowth,
+
+        unitsGrowth,
+
+        aspGrowth,
+
+        adSpendGrowth,
+
+        roiGrowth,
 
         orders,
 
@@ -217,6 +394,62 @@ export function buildKPIs() {
 }
 
 /* ==========================================
+   GROWTH %
+========================================== */
+
+function calculateGrowth(
+
+    current,
+    previous
+
+) {
+
+    const currentValue =
+        Number(
+            current || 0
+        );
+
+    const previousValue =
+        Number(
+            previous || 0
+        );
+
+    if (
+
+        previousValue === 0
+
+    ) {
+
+        if (
+
+            currentValue > 0
+
+        ) {
+
+            return 'NEW';
+
+        }
+
+        return 0;
+
+    }
+
+    return (
+
+        (
+            currentValue -
+            previousValue
+        )
+
+        /
+
+        previousValue
+
+    ) * 100;
+
+}
+
+/* ==========================================
    EMPTY KPI STATE
 ========================================== */
 
@@ -233,6 +466,16 @@ export function getEmptyKPIs() {
         adSpend: 0,
 
         roi: 0,
+
+        gmvGrowth: 0,
+
+        unitsGrowth: 0,
+
+        aspGrowth: 0,
+
+        adSpendGrowth: 0,
+
+        roiGrowth: 0,
 
         orders: 0,
 
