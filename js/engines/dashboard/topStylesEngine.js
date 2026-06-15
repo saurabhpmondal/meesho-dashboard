@@ -13,7 +13,11 @@ import {
    BUILD TOP STYLES
 ========================================== */
 
-export function buildTopStyles() {
+export function buildTopStyles(
+
+    rankBy = 'units'
+
+) {
 
     const state =
         getState();
@@ -192,30 +196,53 @@ export function buildTopStyles() {
 
                 })
 
-            )
-
-            .sort(
-
-                (a, b) =>
-
-                    b.soldUnits -
-
-                    a.soldUnits
-
-            )
-
-            .map(
-
-                (row, index) => ({
-
-                    ...row,
-
-                    rank:
-                        index + 1
-
-                })
-
             );
+
+    /* ==========================
+       RANKING
+    ========================== */
+
+    if (
+
+        rankBy === 'gmv'
+
+    ) {
+
+        rows.sort(
+
+            (a, b) =>
+
+                b.gmv -
+                a.gmv
+
+        );
+
+    } else {
+
+        rows.sort(
+
+            (a, b) =>
+
+                b.soldUnits -
+                a.soldUnits
+
+        );
+
+    }
+
+    rows =
+        rows.map(
+
+            (row, index) => ({
+
+                ...row,
+
+                rank:
+                    index + 1
+
+            })
+
+        );
 
     /* ==========================
        SEARCH AFTER RANKING
@@ -271,6 +298,22 @@ export function buildTopStyles() {
     );
 
     return rows;
+
+}
+
+/* ==========================================
+   EXPORT DATASET
+========================================== */
+
+export function getTopStylesExportData(
+
+    rankBy = 'units'
+
+) {
+
+    return buildTopStyles(
+        rankBy
+    );
 
 }
 
