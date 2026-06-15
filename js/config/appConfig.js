@@ -6,7 +6,7 @@ export const APP_CONFIG = {
 
     APP_NAME: 'Meesho Sales & Ads Dashboard',
 
-    VERSION: '1.0.0',
+    VERSION: '1.1.0',
 
     DEFAULT_CURRENCY: '₹',
 
@@ -24,7 +24,10 @@ export const DATA_SOURCES = {
         'https://docs.google.com/spreadsheets/d/e/2PACX-1vSVAyWN9Q1IBhh1oC9W5YVAQZYqL7RyxaZUuPUbeJ6vaqtEQDTUYmXraBzHuqSVnj7ynO5xkXA9vuuu/pub?gid=328436164&single=true&output=csv',
 
     ADS_CSV:
-        'https://docs.google.com/spreadsheets/d/e/2PACX-1vSVAyWN9Q1IBhh1oC9W5YVAQZYqL7RyxaZUuPUbeJ6vaqtEQDTUYmXraBzHuqSVnj7ynO5xkXA9vuuu/pub?gid=8523756&single=true&output=csv'
+        'https://docs.google.com/spreadsheets/d/e/2PACX-1vSVAyWN9Q1IBhh1oC9W5YVAQZYqL7RyxaZUuPUbeJ6vaqtEQDTUYmXraBzHuqSVnj7ynO5xkXA9vuuu/pub?gid=8523756&single=true&output=csv',
+
+    MASTER_CSV:
+        'https://docs.google.com/spreadsheets/d/e/2PACX-1vSVAyWN9Q1IBhh1oC9W5YVAQZYqL7RyxaZUuPUbeJ6vaqtEQDTUYmXraBzHuqSVnj7ynO5xkXA9vuuu/pub?gid=1659451695&single=true&output=csv'
 
 };
 
@@ -128,11 +131,13 @@ export const SEARCH_FIELDS = [
 
     'size',
 
-    /* Future Ready */
-
     'erp_sku',
 
-    'erp_status'
+    'erp_status',
+
+    'erpsku',
+
+    'sellersku'
 
 ];
 
@@ -186,13 +191,9 @@ export const REPORTS = {
 
     TOP_STATES: 'topStates',
 
-    /* Future Reports */
+    MONTHLY_ADS_PERFORMANCE: 'monthlyAdsPerformance',
 
-    SKU_ANALYSIS: 'skuAnalysis',
-
-    CATALOG_ANALYSIS: 'catalogAnalysis',
-
-    RETURNS_ANALYSIS: 'returnsAnalysis'
+    TOP_STYLES: 'topStyles'
 
 };
 
@@ -270,6 +271,47 @@ export const ADS_COLUMNS = {
 };
 
 /* ==========================================
+   MASTER COLUMN MAPPING
+========================================== */
+
+export const MASTER_COLUMNS = {
+
+    LIVE_DATE:
+        'live_date',
+
+    ERP_LAUNCH_DATE:
+        'erp_launch_date',
+
+    CATEGORY:
+        'category',
+
+    SELLER_SKU:
+        'sellersku',
+
+    ERP_SKU:
+        'erpsku',
+
+    BRAND:
+        'brand',
+
+    ERP_STATUS:
+        'erp_status',
+
+    CATALOG_ID:
+        'catalog_id',
+
+    PRODUCT_ID:
+        'product_id',
+
+    MRP:
+        'mrp',
+
+    TP:
+        'tp'
+
+};
+
+/* ==========================================
    TABLE SETTINGS
 ========================================== */
 
@@ -277,7 +319,9 @@ export const TABLE_CONFIG = {
 
     TOP_STATES_LIMIT: 10,
 
-    DAILY_SALES_SORT: 'DESC',
+    TOP_STYLES_LIMIT: 100,
+
+    DAILY_SALES_SORT: 'ASC',
 
     MONTHLY_SORT: 'DESC'
 
