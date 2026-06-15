@@ -12,6 +12,8 @@ export const state = {
 
     adsData: [],
 
+    masterData: [],
+
     /* ======================================
        FILTERED DATA
     ====================================== */
@@ -60,7 +62,17 @@ export const state = {
 
         ctr: 0,
 
-        cvr: 0
+        cvr: 0,
+
+        gmvGrowth: 0,
+
+        unitsGrowth: 0,
+
+        aspGrowth: 0,
+
+        adSpendGrowth: 0,
+
+        roiGrowth: 0
 
     },
 
@@ -71,6 +83,10 @@ export const state = {
     topStates: [],
 
     monthlyAdsPerformance: [],
+
+    topStyles: [],
+
+    topStylesRankBy: 'units',
 
     /* ======================================
        APP STATUS
@@ -106,6 +122,12 @@ export function getAdsData() {
 
 }
 
+export function getMasterData() {
+
+    return state.masterData;
+
+}
+
 export function getFilters() {
 
     return state.filters;
@@ -115,6 +137,18 @@ export function getFilters() {
 export function getKPIs() {
 
     return state.kpis;
+
+}
+
+export function getTopStyles() {
+
+    return state.topStyles;
+
+}
+
+export function getTopStylesRankBy() {
+
+    return state.topStylesRankBy;
 
 }
 
@@ -133,6 +167,14 @@ export function setSalesData(data) {
 export function setAdsData(data) {
 
     state.adsData = Array.isArray(data)
+        ? data
+        : [];
+
+}
+
+export function setMasterData(data) {
+
+    state.masterData = Array.isArray(data)
         ? data
         : [];
 
@@ -256,6 +298,21 @@ export function setMonthlyAdsPerformance(data) {
 
 }
 
+export function setTopStyles(data) {
+
+    state.topStyles = Array.isArray(data)
+        ? data
+        : [];
+
+}
+
+export function setTopStylesRankBy(value) {
+
+    state.topStylesRankBy =
+        value || 'units';
+
+}
+
 /* ==========================================
    LOADING
 ========================================== */
@@ -310,7 +367,17 @@ export function resetDashboardData() {
 
         ctr: 0,
 
-        cvr: 0
+        cvr: 0,
+
+        gmvGrowth: 0,
+
+        unitsGrowth: 0,
+
+        aspGrowth: 0,
+
+        adSpendGrowth: 0,
+
+        roiGrowth: 0
 
     };
 
@@ -321,6 +388,8 @@ export function resetDashboardData() {
     state.topStates = [];
 
     state.monthlyAdsPerformance = [];
+
+    state.topStyles = [];
 
 }
 
@@ -333,6 +402,8 @@ export function resetState() {
     state.salesData = [];
 
     state.adsData = [];
+
+    state.masterData = [];
 
     state.filteredSalesData = [];
 
