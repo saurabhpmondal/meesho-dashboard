@@ -196,99 +196,134 @@
 
         </section>
 
-        <section class="kpi-section">
+        <!-- ==========================
+             TABS
+        =========================== -->
+
+        <section class="tabs-section">
 
             <div
-                id="kpiCards"
-                class="kpi-grid"
+                id="tabsContainer"
+                class="tabs-container"
             >
             </div>
 
         </section>
 
-        <main class="dashboard-content">
+        <!-- ==========================
+             DASHBOARD PAGE
+        =========================== -->
 
-            <!-- DAILY SALES -->
+        <div
+            id="dashboardPage"
+            class="page-container"
+        >
 
-            <section class="report-card">
-
-                <div class="report-header">
-
-                    <h2>
-                        Daily Sales Performance
-                    </h2>
-
-                </div>
+            <section class="kpi-section">
 
                 <div
-                    id="dailySalesContainer"
-                    class="table-container"
+                    id="kpiCards"
+                    class="kpi-grid"
                 >
                 </div>
 
             </section>
 
-            <!-- MONTH WISE PERFORMANCE -->
+            <main class="dashboard-content">
 
-            <section class="report-card">
+                <!-- DAILY SALES -->
 
-                <div class="report-header">
+                <section class="report-card">
 
-                    <h2>
-                        Month Wise Performance
-                    </h2>
+                    <div class="report-header">
 
-                </div>
+                        <h2>
+                            Daily Sales Performance
+                        </h2>
 
-                <div
-                    id="monthlyPerformanceContainer"
-                    class="table-container"
-                >
-                </div>
+                    </div>
 
-            </section>
+                    <div
+                        id="dailySalesContainer"
+                        class="table-container"
+                    >
+                    </div>
 
-            <!-- TOP STATES -->
+                </section>
 
-            <section class="report-card">
+                <!-- MONTHLY PERFORMANCE -->
 
-                <div class="report-header">
+                <section class="report-card">
 
-                    <h2>
-                        Top 10 States
-                    </h2>
+                    <div class="report-header">
 
-                </div>
+                        <h2>
+                            Month Wise Performance
+                        </h2>
 
-                <div
-                    id="topStatesContainer"
-                    class="table-container"
-                >
-                </div>
+                    </div>
 
-            </section>
+                    <div
+                        id="monthlyPerformanceContainer"
+                        class="table-container"
+                    >
+                    </div>
 
-            <!-- MONTHLY ADS PERFORMANCE -->
+                </section>
 
-            <section class="report-card">
+                <!-- TOP STATES -->
 
-                <div class="report-header">
+                <section class="report-card">
 
-                    <h2>
-                        Monthly Ads Performance
-                    </h2>
+                    <div class="report-header">
 
-                </div>
+                        <h2>
+                            Top 10 States
+                        </h2>
 
-                <div
-                    id="monthlyAdsPerformanceContainer"
-                    class="table-container"
-                >
-                </div>
+                    </div>
 
-            </section>
+                    <div
+                        id="topStatesContainer"
+                        class="table-container"
+                    >
+                    </div>
 
-            <!-- TOP STYLES -->
+                </section>
+
+                <!-- MONTHLY ADS -->
+
+                <section class="report-card">
+
+                    <div class="report-header">
+
+                        <h2>
+                            Monthly Ads Performance
+                        </h2>
+
+                    </div>
+
+                    <div
+                        id="monthlyAdsPerformanceContainer"
+                        class="table-container"
+                    >
+                    </div>
+
+                </section>
+
+            </main>
+
+        </div>
+
+        <!-- ==========================
+             TOP STYLES PAGE
+        =========================== -->
+
+        <div
+            id="topStylesPage"
+            class="page-container"
+            style="display:none;"
+        >
 
             <section class="report-card">
 
@@ -308,7 +343,7 @@
 
             </section>
 
-        </main>
+        </div>
 
     </div>
 
