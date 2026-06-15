@@ -12,6 +12,7 @@ import {
 
     setSalesData,
     setAdsData,
+    setMasterData,
     setFilteredSalesData,
     setFilteredAdsData,
     updateFilters,
@@ -40,6 +41,7 @@ import {
 
     normalizeSalesData,
     normalizeAdsData,
+    normalizeMasterData,
     getLatestMonthYear
 
 } from '../utils/dateUtils.js';
@@ -94,6 +96,15 @@ async function initializeApp() {
                 DATA_SOURCES.ADS_CSV
             );
 
+        console.log(
+            'Loading Master Data...'
+        );
+
+        const masterData =
+            await loadCSV(
+                DATA_SOURCES.MASTER_CSV
+            );
+
         const normalizedSales =
             normalizeSalesData(
                 salesData
@@ -104,6 +115,15 @@ async function initializeApp() {
                 adsData
             );
 
+        const normalizedMaster =
+            normalizeMasterData(
+                masterData
+            );
+
+        /* ==============================
+           STORE DATA
+        ============================== */
+
         setSalesData(
             normalizedSales
         );
@@ -111,6 +131,14 @@ async function initializeApp() {
         setAdsData(
             normalizedAds
         );
+
+        setMasterData(
+            normalizedMaster
+        );
+
+        /* ==============================
+           DEFAULT FILTERED DATA
+        ============================== */
 
         setFilteredSalesData(
             normalizedSales
@@ -120,11 +148,19 @@ async function initializeApp() {
             normalizedAds
         );
 
+        /* ==============================
+           FILTERS
+        ============================== */
+
         initializeFilters(
             normalizedSales
         );
 
         initializeEvents();
+
+        /* ==============================
+           REPORT REGISTRY
+        ============================== */
 
         initializeRegistry();
 
@@ -144,11 +180,22 @@ async function initializeApp() {
             'Dashboard Ready'
         );
 
+        console.log(
+
+            'Master Records:',
+
+            normalizedMaster.length
+
+        );
+
     } catch (error) {
 
         console.error(
+
             'App Initialization Failed',
+
             error
+
         );
 
         alert(
