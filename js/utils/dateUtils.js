@@ -189,6 +189,91 @@ export function normalizeAdsData(
 }
 
 /* ==========================================
+   MASTER NORMALIZATION
+========================================== */
+
+export function normalizeMasterData(
+
+    data = []
+
+) {
+
+    return data.map(
+
+        row => {
+
+            return {
+
+                ...row,
+
+                sellersku:
+                    String(
+                        row.sellersku || ''
+                    ).trim(),
+
+                erpsku:
+                    String(
+                        row.erpsku || ''
+                    ).trim(),
+
+                erp_status:
+                    String(
+                        row.erp_status || ''
+                    ).trim(),
+
+                erp_launch_date:
+                    String(
+                        row.erp_launch_date || ''
+                    ).trim(),
+
+                live_date:
+                    String(
+                        row.live_date || ''
+                    ).trim(),
+
+                category:
+                    String(
+                        row.category || ''
+                    ).trim(),
+
+                brand:
+                    String(
+                        row.brand || ''
+                    ).trim(),
+
+                catalog_id:
+                    String(
+                        row.catalog_id || ''
+                    ).trim(),
+
+                product_id:
+                    String(
+                        row.product_id || ''
+                    ).trim(),
+
+                mrp:
+                    Number(
+                        sanitizeNumber(
+                            row.mrp
+                        )
+                    ),
+
+                tp:
+                    Number(
+                        sanitizeNumber(
+                            row.tp
+                        )
+                    )
+
+            };
+
+        }
+
+    );
+
+}
+
+/* ==========================================
    US DATE → ISO
 ========================================== */
 
