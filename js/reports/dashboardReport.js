@@ -40,6 +40,12 @@ import {
 
 import {
 
+    buildTopStyles
+
+} from '../engines/dashboard/topStylesEngine.js';
+
+import {
+
     renderKPICards
 
 } from '../components/kpiCards.js';
@@ -67,6 +73,12 @@ import {
     renderMonthlyAdsPerformanceReport
 
 } from './monthlyAdsPerformanceReport.js';
+
+import {
+
+    renderTopStylesReport
+
+} from './topStylesReport.js';
 
 /* ==========================================
    DASHBOARD REPORT
@@ -110,6 +122,8 @@ export async function renderDashboard() {
 
         buildMonthlyAdsPerformance();
 
+        buildTopStyles();
+
         /* ==============================
            RENDER REPORTS
         ============================== */
@@ -123,6 +137,8 @@ export async function renderDashboard() {
         renderTopStatesReport();
 
         renderMonthlyAdsPerformanceReport();
+
+        renderTopStylesReport();
 
     } catch (error) {
 
