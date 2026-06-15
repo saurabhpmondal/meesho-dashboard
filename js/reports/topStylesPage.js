@@ -35,7 +35,7 @@ export const topStylesPage = {
 };
 
 /* ==========================================
-   RENDER PAGE
+   RENDER
 ========================================== */
 
 export async function renderTopStylesPage() {
@@ -52,7 +52,7 @@ export async function renderTopStylesPage() {
 
         console.error(
 
-            'Top Styles Render Failed',
+            'Top Styles Page Failed',
 
             error
 
