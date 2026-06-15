@@ -8,6 +8,12 @@ import {
 
 } from '../config/tabConfig.js';
 
+import {
+
+    renderTopStylesPage
+
+} from '../reports/topStylesPage.js';
+
 /* ==========================================
    ACTIVE TAB
 ========================================== */
@@ -21,6 +27,8 @@ let activeTab = 'dashboard';
 export function initializeTabs() {
 
     renderTabs();
+
+    renderPage();
 
 }
 
@@ -85,14 +93,14 @@ function bindEvents() {
             button => {
 
                 button.onclick =
-                    () => {
+                    async () => {
 
                         activeTab =
                             button.dataset.tab;
 
                         renderTabs();
 
-                        renderPage();
+                        await renderPage();
 
                     };
 
@@ -106,7 +114,7 @@ function bindEvents() {
    PAGE SWITCH
 ========================================== */
 
-function renderPage() {
+async function renderPage() {
 
     const dashboard =
         document.getElementById(
@@ -118,15 +126,41 @@ function renderPage() {
             'topStylesPage'
         );
 
-    dashboard.style.display =
-        activeTab === 'dashboard'
-            ? 'block'
-            : 'none';
+    if (
 
-    topStyles.style.display =
+        dashboard
+
+    ) {
+
+        dashboard.style.display =
+            activeTab === 'dashboard'
+                ? 'block'
+                : 'none';
+
+    }
+
+    if (
+
+        topStyles
+
+    ) {
+
+        topStyles.style.display =
+            activeTab === 'topStyles'
+                ? 'block'
+                : 'none';
+
+    }
+
+    if (
+
         activeTab === 'topStyles'
-            ? 'block'
-            : 'none';
+
+    ) {
+
+        await renderTopStylesPage();
+
+    }
 
 }
 
