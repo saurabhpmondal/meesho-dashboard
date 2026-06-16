@@ -1,6 +1,6 @@
 // js/reports/topStylesReport.js
 
-import topStylesEngine from '../engines/dashboard/topStylesEngine.js';
+import * as StylesModule from '../engines/dashboard/topStylesEngine.js';
 
 export class TopStylesReport {
   constructor() {
@@ -42,13 +42,17 @@ export class TopStylesReport {
     if (!elementWrapper) return;
     elementWrapper.innerHTML = '<div class="loading-spinner">Compiling Variant Conversion Data Sheets...</div>';
     try {
-      // Check both standard object execution or class instance instantiation patterns
+      // Resolve the actual engine instance dynamically from the wildcard namespace bundle
+      const topStylesEngine = StylesModule.topStylesEngine || StylesModule.default || StylesModule.TopStylesLogicEngine || Object.values(StylesModule)[0];
+      
       if (topStylesEngine) {
         if (typeof topStylesEngine.render === 'function') {
           await topStylesEngine.render(elementWrapper);
         } else if (typeof topStylesEngine === 'function') {
           const engineInstance = new topStylesEngine();
           await engineInstance.render(elementWrapper);
+        } else {
+          elementWrapper.innerHTML = '<p>Error: Resolved styles engine does not expose a render method context.</p>';
         }
       } else {
         elementWrapper.innerHTML = '<p>The specific top catalog performance tracking module failed to compile links.</p>';
