@@ -1,12 +1,6 @@
-/* ==========================================
-   DASHBOARD REPORT
-========================================== */
+// js/reports/dashboardReport.js
 
-import {
-
-    applyFilters
-
-} from '../servicesimport { kpiEngine } from '../engines/dashboard/kpiEngine.js';
+import { kpiEngine } from '../engines/dashboard/kpiEngine.js';
 import { filterBar } from '../components/filterBar.js';
 
 export class DashboardReport {
@@ -14,20 +8,39 @@ export class DashboardReport {
     this.container = null;
   }
 
+  /**
+   * Initializes and renders the core multi-card marketplace operational dashboard.
+   * @param {HTMLElement} targetContainer 
+   */
   async init(targetContainer) {
     this.container = targetContainer;
     this.renderLayout();
     
+    // Boot internal layout components safely
     const filterContainer = this.container.querySelector('#dashboard-filter-bar');
     const contentContainer = this.container.querySelector('#dashboard-main-view');
     
-    if (filterBar && typeof filterBar.init === 'function') {
-      filterBar.init(filterContainer, () => this.refreshData(contentContainer));
+    // Fixed safe initialization check for filterBar
+    if (filterContainer && filterBar) {
+      try {
+        if (typeof filterBar.init === 'function') {
+          filterBar.init(filterContainer, () => this.refreshData(contentContainer));
+        } else if (typeof filterBar === 'function') {
+          // If filterBar is a class instantiation pattern instead
+          const filterInstance = new filterBar();
+          filterInstance.init(filterContainer, () => this.refreshData(contentContainer));
+        }
+      } catch (filterError) {
+        console.warn("DashboardReport: filterBar initialization skipped or warning encountered:", filterError);
+      }
     }
     
     await this.refreshData(contentContainer);
   }
 
+  /**
+   * Generates basic inner structure slots.
+   */
   renderLayout() {
     this.container.innerHTML = `
       <div class="dashboard-report-layout">
@@ -37,7 +50,13 @@ export class DashboardReport {
     `;
   }
 
+  /**
+   * Fires active background calculation aggregation data processes.
+   * @param {HTMLElement} viewElement 
+   */
   async refreshData(viewElement) {
+    if (!viewElement) return;
+    
     viewElement.innerHTML = '<div class="loading-spinner">Loading Analytical Performance Metrics...</div>';
     try {
       if (kpiEngine && typeof kpiEngine.render === 'function') {
@@ -50,133 +69,4 @@ export class DashboardReport {
       viewElement.innerHTML = '<p>Data aggregation execution failed during compilation process structures.</p>';
     }
   }
-}
-';
-
-import {
-
-    buildKPIs
-
-} from '../engines/dashboard/kpiEngine.js';
-
-import {
-
-    buildDailySales
-
-} from '../engines/dashboard/dailySalesEngine.js';
-
-import {
-
-    buildMonthlyPerformance
-
-} from '../engines/dashboard/monthlyPerformanceEngine.js';
-
-import {
-
-    buildTopStates
-
-} from '../engines/dashboard/topStatesEngine.js';
-
-import {
-
-    buildMonthlyAdsPerformance
-
-} from '../engines/dashboard/monthlyAdsPerformanceEngine.js';
-
-import {
-
-    renderKPICards
-
-} from '../components/kpiCards.js';
-
-import {
-
-    renderDailySalesReport
-
-} from './dailySalesReport.js';
-
-import {
-
-    renderMonthlyPerformanceReport
-
-} from './monthlyPerformanceReport.js';
-
-import {
-
-    renderTopStatesReport
-
-} from './topStatesReport.js';
-
-import {
-
-    renderMonthlyAdsPerformanceReport
-
-} from './monthlyAdsPerformanceReport.js';
-
-/* ==========================================
-   DASHBOARD REPORT
-========================================== */
-
-export const dashboardReport = {
-
-    async render() {
-
-        await renderDashboard();
-
-    }
-
-};
-
-/* ==========================================
-   RENDER DASHBOARD
-========================================== */
-
-export async function renderDashboard() {
-
-    try {
-
-        applyFilters();
-
-        buildKPIs();
-
-        buildDailySales();
-
-        buildMonthlyPerformance();
-
-        buildTopStates();
-
-        buildMonthlyAdsPerformance();
-
-        renderKPICards();
-
-        renderDailySalesReport();
-
-        renderMonthlyPerformanceReport();
-
-        renderTopStatesReport();
-
-        renderMonthlyAdsPerformanceReport();
-
-    } catch (error) {
-
-        console.error(
-
-            'Dashboard Render Failed',
-
-            error
-
-        );
-
-    }
-
-}
-
-/* ==========================================
-   REFRESH DASHBOARD
-========================================== */
-
-export async function refreshDashboardReport() {
-
-    await renderDashboard();
-
 }
