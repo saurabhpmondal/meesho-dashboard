@@ -6,7 +6,52 @@ import {
 
     applyFilters
 
-} from '../services/filterService.js';
+} from '../servicesimport { kpiEngine } from '../engines/dashboard/kpiEngine.js';
+import { filterBar } from '../components/filterBar.js';
+
+export class DashboardReport {
+  constructor() {
+    this.container = null;
+  }
+
+  async init(targetContainer) {
+    this.container = targetContainer;
+    this.renderLayout();
+    
+    const filterContainer = this.container.querySelector('#dashboard-filter-bar');
+    const contentContainer = this.container.querySelector('#dashboard-main-view');
+    
+    if (filterBar && typeof filterBar.init === 'function') {
+      filterBar.init(filterContainer, () => this.refreshData(contentContainer));
+    }
+    
+    await this.refreshData(contentContainer);
+  }
+
+  renderLayout() {
+    this.container.innerHTML = `
+      <div class="dashboard-report-layout">
+        <div id="dashboard-filter-bar" class="filter-bar-section"></div>
+        <div id="dashboard-main-view" class="metrics-content-grid"></div>
+      </div>
+    `;
+  }
+
+  async refreshData(viewElement) {
+    viewElement.innerHTML = '<div class="loading-spinner">Loading Analytical Performance Metrics...</div>';
+    try {
+      if (kpiEngine && typeof kpiEngine.render === 'function') {
+        await kpiEngine.render(viewElement);
+      } else {
+        viewElement.innerHTML = '<p>Error mounting KPI Performance engine framework matrix.</p>';
+      }
+    } catch (error) {
+      console.error("DashboardReport Execution Halt Failure:", error);
+      viewElement.innerHTML = '<p>Data aggregation execution failed during compilation process structures.</p>';
+    }
+  }
+}
+';
 
 import {
 
