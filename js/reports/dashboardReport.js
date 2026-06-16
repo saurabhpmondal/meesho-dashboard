@@ -57,20 +57,41 @@ export class DashboardReport {
     
     viewElement.innerHTML = '<div class="loading-spinner">Loading Analytical Performance Metrics...</div>';
     try {
-      // Resolve the actual engine instance dynamically from the wildcard namespace bundle
-      const kpiEngine = KPIModule.kpiEngine || KPIModule.default || KPIModule.KPILogicEngine || Object.values(KPIModule)[0];
+      // 1. Resolve the raw engine object or class from the module exports
+      const rawEngine = KPIModule.kpiEngine || KPIModule.default || KPIModule.KPILogicEngine || Object.values(KPIModule)[0];
       
-      if (kpiEngine) {
-        if (typeof kpiEngine.render === 'function') {
-          await kpiEngine.render(viewElement);
-        } else if (typeof kpiEngine === 'function') {
-          const engineInstance = new kpiEngine();
-          await engineInstance.render(viewElement);
-        } else {
-          viewElement.innerHTML = '<p>Error: Resolved engine does not expose a render method context.</p>';
-        }
-      } else {
+      if (!rawEngine) {
         viewElement.innerHTML = '<p>Error mounting KPI Performance engine framework matrix.</p>';
+        return;
+      }
+
+      // 2. Safely get an executable instance (handle object vs class constructor)
+      let targetInstance = rawEngine;
+      if (typeof rawEngine === 'function') {
+        targetInstance = new rawEngine();
+      }
+
+      // 3. Dynamically scan and execute the correct UI display method hook
+      if (typeof targetInstance.render === 'function') {
+        await targetInstance.render(viewElement);
+      } else if (typeof targetInstance.init === 'function') {
+        await targetInstance.init(viewElement);
+      } else if (typeof targetInstance.initEngine === 'function') {
+        await targetInstance.initEngine(viewElement);
+      } else if (typeof targetInstance.mount === 'function') {
+        await targetInstance.mount(viewElement);
+      } else {
+        // Fallback: search for any available method inside the engine object that looks like an initiator
+        const availableMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(targetInstance))
+          .concat(Object.keys(targetInstance))
+          .filter(prop => typeof targetInstance[prop] === 'function' && prop !== 'constructor');
+          
+        if (availableMethods.length > 0) {
+          console.log(`DashboardReport: Found alternative initialization method: ${availableMethods[0]}`);
+          await targetInstance[availableMethods[0]](viewElement);
+        } else {
+          viewElement.innerHTML = '<p>Error: Resolved engine does not expose an initialization method context.</p>';
+        }
       }
     } catch (error) {
       console.error("DashboardReport Execution Halt Failure:", error);
