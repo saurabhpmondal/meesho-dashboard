@@ -1,71 +1,207 @@
-// js/reports/topStylesReport.js
+/* ==========================================
+   TOP STYLES REPORT
+========================================== */
 
-import * as StylesModule from '../engines/dashboard/topStylesEngine.js';
+import {
 
-export class TopStylesReport {
-  constructor() {
-    this.container = null;
-  }
+    getTopStyles
 
-  /**
-   * Initializes and structures the Top Styles analytical execution viewport.
-   * @param {HTMLElement} targetContainer 
-   */
-  async init(targetContainer) {
-    this.container = targetContainer;
-    this.renderLayout();
-    
-    const styleViewGrid = this.container.querySelector('#styles-engine-viewport');
-    await this.loadStylesMatrix(styleViewGrid);
-  }
+} from '../core/state.js';
 
-  /**
-   * Creates clean isolated structural wrappers for inventory ranking grids.
-   */
-  renderLayout() {
-    this.container.innerHTML = `
-      <div class="styles-report-layout">
-        <div class="page-section-header">
-          <h2>Catalog Demand Ranking Analysis</h2>
-          <p class="section-description">High conversion variants, demand movement, and inventory sales metrics.</p>
-        </div>
-        <div id="styles-engine-viewport" class="styles-table-wrapper"></div>
-      </div>
-    `;
-  }
+import {
 
-  /**
-   * Connects back to the base analytics processing layout engine rulesets.
-   * @param {HTMLElement} elementWrapper 
-   */
-  async loadStylesMatrix(elementWrapper) {
-    if (!elementWrapper) return;
-    elementWrapper.innerHTML = '<div class="loading-spinner">Compiling Variant Conversion Data Sheets...</div>';
-    try {
-      // Look for custom style building entry methods or core fallbacks
-      const buildStylesMethod = StylesModule.buildStyles || 
-                                StylesModule.initStyles ||
-                                (StylesModule.topStylesEngine && StylesModule.topStylesEngine.buildStyles);
+    formatCurrency
 
-      if (typeof buildStylesMethod === 'function') {
-        await buildStylesMethod(elementWrapper);
-      } else {
-        const rawEngine = StylesModule.topStylesEngine || StylesModule.default || Object.values(StylesModule)[0];
-        let targetInstance = typeof rawEngine === 'function' ? new rawEngine() : rawEngine;
+} from '../utils/formatters.js';
 
-        if (targetInstance && typeof targetInstance.buildStyles === 'function') {
-          await targetInstance.buildStyles(elementWrapper);
-        } else if (targetInstance && typeof targetInstance.render === 'function') {
-          await targetInstance.render(elementWrapper);
-        } else if (targetInstance && typeof targetInstance.init === 'function') {
-          await targetInstance.init(elementWrapper);
-        } else {
-          elementWrapper.innerHTML = '<p>The specific top catalog performance tracking module failed to compile links.</p>';
-        }
-      }
-    } catch (error) {
-      console.error("Styles Engine Critical Execution Error:", error);
-      elementWrapper.innerHTML = '<p>An operational error occurred while extracting catalog performance records.</p>';
+/* ==========================================
+   RENDER REPORT
+========================================== */
+
+export function renderTopStylesReport() {
+
+    const container =
+        document.getElementById(
+
+            'topStylesContainer'
+
+        );
+
+    if (!container) {
+
+        return;
+
     }
-  }
+
+    const data =
+        getTopStyles();
+
+    if (!data.length) {
+
+        container.innerHTML = `
+
+            <div
+                style="
+                    padding:24px;
+                    text-align:center;
+                "
+            >
+
+                No styles found
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML = `
+
+        <table
+            class="report-table"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Rank
+                    </th>
+
+                    <th>
+                        ERP SKU
+                    </th>
+
+                    <th>
+                        ERP Launch Date
+                    </th>
+
+                    <th>
+                        ERP Status
+                    </th>
+
+                    <th>
+                        Sold Units
+                    </th>
+
+                    <th>
+                        GMV
+                    </th>
+
+                    <th>
+                        DRR
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                ${data
+
+                    .map(
+
+                        row => `
+
+                            <tr>
+
+                                <td>
+
+                                    ${row.rank}
+
+                                </td>
+
+                                <td>
+
+                                    ${row.erpsku}
+
+                                </td>
+
+                                <td>
+
+                                    ${row.erp_launch_date || ''}
+
+                                </td>
+
+                                <td>
+
+                                    ${row.erp_status || ''}
+
+                                </td>
+
+                                <td>
+
+                                    ${Number(
+
+                                        row.soldUnits || 0
+
+                                    ).toLocaleString(
+
+                                        'en-IN'
+
+                                    )}
+
+                                </td>
+
+                                <td>
+
+                                    ${formatCurrency(
+
+                                        row.gmv || 0
+
+                                    )}
+
+                                </td>
+
+                                <td>
+
+                                    ${Number(
+
+                                        row.drr || 0
+
+                                    ).toFixed(2)}
+
+                                </td>
+
+                            </tr>
+
+                        `
+
+                    )
+
+                    .join('')}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+/* ==========================================
+   CLEAR
+========================================== */
+
+export function clearTopStylesReport() {
+
+    const container =
+        document.getElementById(
+
+            'topStylesContainer'
+
+        );
+
+    if (!container) {
+
+        return;
+
+    }
+
+    container.innerHTML = '';
+
 }
