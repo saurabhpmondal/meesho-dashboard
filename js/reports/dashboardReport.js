@@ -57,38 +57,55 @@ export class DashboardReport {
     
     viewElement.innerHTML = '<div class="loading-spinner">Loading Analytical Performance Metrics...</div>';
     try {
-      // Direct lookups across module exports AND the global window namespace to handle non-exported setups
-      const kpiEngine = KPIModule.kpiEngine || 
+      // 1. Locate the engine inside the module exports
+      const rawEngine = KPIModule.kpiEngine || 
                         KPIModule.default || 
                         window.kpiEngine || 
                         window.kpiEngineInstance || 
                         (typeof KPIModule === 'object' && Object.values(KPIModule).find(v => typeof v === 'object' || typeof v === 'function'));
 
-      if (!kpiEngine) {
-        viewElement.innerHTML = '<p>Error mounting KPI Performance engine framework matrix.</p>';
+      if (!rawEngine) {
+        viewElement.innerHTML = '<p>Error: Could not locate kpiEngine module file exports.</p>';
         return;
       }
 
-      // Check for an executable method inside an object or instance
-      let executed = false;
-      const executableInstance = typeof kpiEngine === 'function' ? new kpiEngine() : kpiEngine;
+      // 2. Resolve target execution instance block
+      let targetInstance = rawEngine;
+      if (typeof rawEngine === 'function') {
+        targetInstance = new rawEngine();
+      }
 
-      // Prioritize explicit operational method matches, completely ignoring native system prototype keys
+      // ==========================================
+      // CRITICAL DEBUGGING SNIPPET: Inspect keys
+      // ==========================================
+      console.log("=== DEBUGGING KPI ENGINE STRUCTURAL KEYS ===");
+      console.log("Raw Export Keys:", Object.keys(KPIModule));
+      console.log("Engine Instance Keys:", Object.getOwnPropertyNames(Object.getPrototypeOf(targetInstance)));
+      console.log("Engine Direct Keys:", Object.keys(targetInstance));
+      console.log("============================================");
+
+      // 3. Match execution entry points
+      let executed = false;
       const explicitMethods = ['render', 'init', 'initEngine', 'mount'];
       for (const methodName of explicitMethods) {
-        if (executableInstance && typeof executableInstance[methodName] === 'function') {
-          await executableInstance[methodName](viewElement);
+        if (targetInstance && typeof targetInstance[methodName] === 'function') {
+          await targetInstance[methodName](viewElement);
           executed = true;
           break;
         }
       }
 
       if (!executed) {
-        // If it is a completely flat functional script or simple runner configuration block
-        if (typeof executableInstance === 'function') {
-          await executableInstance(viewElement);
+        if (typeof targetInstance === 'function') {
+          await targetInstance(viewElement);
         } else {
-          viewElement.innerHTML = '<p>Error: Resolved engine structure does not contain a valid UI rendering entry method.</p>';
+          viewElement.innerHTML = `
+            <div style="padding: 1rem; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
+              <h4>Data Rendering Point Mismatch</h4>
+              <p>The layout engine is loaded, but it uses an unrecognized execution method name.</p>
+              <p style="font-size: 0.9rem; margin-top: 0.5rem; color: #555;">Please open your browser console logs and share the printed engine instance keys.</p>
+            </div>
+          `;
         }
       }
     } catch (error) {
