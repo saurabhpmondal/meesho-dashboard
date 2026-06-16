@@ -42,37 +42,25 @@ export class TopStylesReport {
     if (!elementWrapper) return;
     elementWrapper.innerHTML = '<div class="loading-spinner">Compiling Variant Conversion Data Sheets...</div>';
     try {
-      // Direct lookups across module exports AND the global window namespace to handle non-exported setups
-      const topStylesEngine = StylesModule.topStylesEngine || 
-                              StylesModule.default || 
-                              window.topStylesEngine || 
-                              window.topStylesEngineInstance ||
-                              (typeof StylesModule === 'object' && Object.values(StylesModule).find(v => typeof v === 'object' || typeof v === 'function'));
+      // Look for custom style building entry methods or core fallbacks
+      const buildStylesMethod = StylesModule.buildStyles || 
+                                StylesModule.initStyles ||
+                                (StylesModule.topStylesEngine && StylesModule.topStylesEngine.buildStyles);
 
-      if (!topStylesEngine) {
-        elementWrapper.innerHTML = '<p>The specific top catalog performance tracking module failed to compile links.</p>';
-        return;
-      }
+      if (typeof buildStylesMethod === 'function') {
+        await buildStylesMethod(elementWrapper);
+      } else {
+        const rawEngine = StylesModule.topStylesEngine || StylesModule.default || Object.values(StylesModule)[0];
+        let targetInstance = typeof rawEngine === 'function' ? new rawEngine() : rawEngine;
 
-      // Check for an executable method inside an object or instance
-      let executed = false;
-      const executableInstance = typeof topStylesEngine === 'function' ? new topStylesEngine() : topStylesEngine;
-
-      // Prioritize explicit operational method matches, completely ignoring native system prototype keys
-      const explicitMethods = ['render', 'init', 'initEngine', 'mount'];
-      for (const methodName of explicitMethods) {
-        if (executableInstance && typeof executableInstance[methodName] === 'function') {
-          await executableInstance[methodName](elementWrapper);
-          executed = true;
-          break;
-        }
-      }
-
-      if (!executed) {
-        if (typeof executableInstance === 'function') {
-          await executableInstance(elementWrapper);
+        if (targetInstance && typeof targetInstance.buildStyles === 'function') {
+          await targetInstance.buildStyles(elementWrapper);
+        } else if (targetInstance && typeof targetInstance.render === 'function') {
+          await targetInstance.render(elementWrapper);
+        } else if (targetInstance && typeof targetInstance.init === 'function') {
+          await targetInstance.init(elementWrapper);
         } else {
-          elementWrapper.innerHTML = '<p>Error: Resolved styles engine structure does not contain a valid UI rendering entry method.</p>';
+          elementWrapper.innerHTML = '<p>The specific top catalog performance tracking module failed to compile links.</p>';
         }
       }
     } catch (error) {
