@@ -57,55 +57,25 @@ export class DashboardReport {
     
     viewElement.innerHTML = '<div class="loading-spinner">Loading Analytical Performance Metrics...</div>';
     try {
-      // 1. Locate the engine inside the module exports
-      const rawEngine = KPIModule.kpiEngine || 
-                        KPIModule.default || 
-                        window.kpiEngine || 
-                        window.kpiEngineInstance || 
-                        (typeof KPIModule === 'object' && Object.values(KPIModule).find(v => typeof v === 'object' || typeof v === 'function'));
+      // Direct lookup to find your custom exported buildKPIs method or standard fallbacks
+      const buildMethod = KPIModule.buildKPIs || 
+                          (KPIModule.kpiEngine && KPIModule.kpiEngine.buildKPIs) || 
+                          (KPIModule.default && KPIModule.default.buildKPIs);
 
-      if (!rawEngine) {
-        viewElement.innerHTML = '<p>Error: Could not locate kpiEngine module file exports.</p>';
-        return;
-      }
+      if (typeof buildMethod === 'function') {
+        // Execute your engine's original layout rendering process
+        await buildMethod(viewElement);
+      } else {
+        // If it's structured as an instantiated class with buildKPIs instead
+        const rawEngine = KPIModule.kpiEngine || KPIModule.default || Object.values(KPIModule)[0];
+        let targetInstance = typeof rawEngine === 'function' ? new rawEngine() : rawEngine;
 
-      // 2. Resolve target execution instance block
-      let targetInstance = rawEngine;
-      if (typeof rawEngine === 'function') {
-        targetInstance = new rawEngine();
-      }
-
-      // ==========================================
-      // CRITICAL DEBUGGING SNIPPET: Inspect keys
-      // ==========================================
-      console.log("=== DEBUGGING KPI ENGINE STRUCTURAL KEYS ===");
-      console.log("Raw Export Keys:", Object.keys(KPIModule));
-      console.log("Engine Instance Keys:", Object.getOwnPropertyNames(Object.getPrototypeOf(targetInstance)));
-      console.log("Engine Direct Keys:", Object.keys(targetInstance));
-      console.log("============================================");
-
-      // 3. Match execution entry points
-      let executed = false;
-      const explicitMethods = ['render', 'init', 'initEngine', 'mount'];
-      for (const methodName of explicitMethods) {
-        if (targetInstance && typeof targetInstance[methodName] === 'function') {
-          await targetInstance[methodName](viewElement);
-          executed = true;
-          break;
-        }
-      }
-
-      if (!executed) {
-        if (typeof targetInstance === 'function') {
-          await targetInstance(viewElement);
+        if (targetInstance && typeof targetInstance.buildKPIs === 'function') {
+          await targetInstance.buildKPIs(viewElement);
+        } else if (targetInstance && typeof targetInstance.render === 'function') {
+          await targetInstance.render(viewElement);
         } else {
-          viewElement.innerHTML = `
-            <div style="padding: 1rem; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
-              <h4>Data Rendering Point Mismatch</h4>
-              <p>The layout engine is loaded, but it uses an unrecognized execution method name.</p>
-              <p style="font-size: 0.9rem; margin-top: 0.5rem; color: #555;">Please open your browser console logs and share the printed engine instance keys.</p>
-            </div>
-          `;
+          viewElement.innerHTML = '<p>Error: Could not resolve buildKPIs or render method hook inside engine.</p>';
         }
       }
     } catch (error) {
