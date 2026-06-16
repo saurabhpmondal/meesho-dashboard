@@ -42,40 +42,37 @@ export class TopStylesReport {
     if (!elementWrapper) return;
     elementWrapper.innerHTML = '<div class="loading-spinner">Compiling Variant Conversion Data Sheets...</div>';
     try {
-      // 1. Resolve the raw engine object or class from the module exports
-      const rawEngine = StylesModule.topStylesEngine || StylesModule.default || StylesModule.TopStylesLogicEngine || Object.values(StylesModule)[0];
-      
-      if (!rawEngine) {
+      // Direct lookups across module exports AND the global window namespace to handle non-exported setups
+      const topStylesEngine = StylesModule.topStylesEngine || 
+                              StylesModule.default || 
+                              window.topStylesEngine || 
+                              window.topStylesEngineInstance ||
+                              (typeof StylesModule === 'object' && Object.values(StylesModule).find(v => typeof v === 'object' || typeof v === 'function'));
+
+      if (!topStylesEngine) {
         elementWrapper.innerHTML = '<p>The specific top catalog performance tracking module failed to compile links.</p>';
         return;
       }
 
-      // 2. Safely get an executable instance (handle object vs class constructor)
-      let targetInstance = rawEngine;
-      if (typeof rawEngine === 'function') {
-        targetInstance = new rawEngine();
+      // Check for an executable method inside an object or instance
+      let executed = false;
+      const executableInstance = typeof topStylesEngine === 'function' ? new topStylesEngine() : topStylesEngine;
+
+      // Prioritize explicit operational method matches, completely ignoring native system prototype keys
+      const explicitMethods = ['render', 'init', 'initEngine', 'mount'];
+      for (const methodName of explicitMethods) {
+        if (executableInstance && typeof executableInstance[methodName] === 'function') {
+          await executableInstance[methodName](elementWrapper);
+          executed = true;
+          break;
+        }
       }
 
-      // 3. Dynamically scan and execute the correct UI display method hook
-      if (typeof targetInstance.render === 'function') {
-        await targetInstance.render(elementWrapper);
-      } else if (typeof targetInstance.init === 'function') {
-        await targetInstance.init(elementWrapper);
-      } else if (typeof targetInstance.initEngine === 'function') {
-        await targetInstance.initEngine(elementWrapper);
-      } else if (typeof targetInstance.mount === 'function') {
-        await targetInstance.mount(elementWrapper);
-      } else {
-        // Fallback: search for alternative method descriptors
-        const availableMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(targetInstance))
-          .concat(Object.keys(targetInstance))
-          .filter(prop => typeof targetInstance[prop] === 'function' && prop !== 'constructor');
-          
-        if (availableMethods.length > 0) {
-          console.log(`TopStylesReport: Found alternative initialization method: ${availableMethods[0]}`);
-          await targetInstance[availableMethods[0]](elementWrapper);
+      if (!executed) {
+        if (typeof executableInstance === 'function') {
+          await executableInstance(elementWrapper);
         } else {
-          elementWrapper.innerHTML = '<p>Error: Resolved styles engine does not expose an initialization method context.</p>';
+          elementWrapper.innerHTML = '<p>Error: Resolved styles engine structure does not contain a valid UI rendering entry method.</p>';
         }
       }
     } catch (error) {
