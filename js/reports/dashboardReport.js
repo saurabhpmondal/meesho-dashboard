@@ -1,6 +1,6 @@
 // js/reports/dashboardReport.js
 
-import { kpiEngine } from '../engines/dashboard/kpiEngine.js';
+import kpiEngine from '../engines/dashboard/kpiEngine.js';
 import { filterBar } from '../components/filterBar.js';
 
 export class DashboardReport {
@@ -20,13 +20,11 @@ export class DashboardReport {
     const filterContainer = this.container.querySelector('#dashboard-filter-bar');
     const contentContainer = this.container.querySelector('#dashboard-main-view');
     
-    // Fixed safe initialization check for filterBar
     if (filterContainer && filterBar) {
       try {
         if (typeof filterBar.init === 'function') {
           filterBar.init(filterContainer, () => this.refreshData(contentContainer));
         } else if (typeof filterBar === 'function') {
-          // If filterBar is a class instantiation pattern instead
           const filterInstance = new filterBar();
           filterInstance.init(filterContainer, () => this.refreshData(contentContainer));
         }
@@ -59,8 +57,14 @@ export class DashboardReport {
     
     viewElement.innerHTML = '<div class="loading-spinner">Loading Analytical Performance Metrics...</div>';
     try {
-      if (kpiEngine && typeof kpiEngine.render === 'function') {
-        await kpiEngine.render(viewElement);
+      // Check both standard object execution or class instance instantiation patterns
+      if (kpiEngine) {
+        if (typeof kpiEngine.render === 'function') {
+          await kpiEngine.render(viewElement);
+        } else if (typeof kpiEngine === 'function') {
+          const engineInstance = new kpiEngine();
+          await engineInstance.render(viewElement);
+        }
       } else {
         viewElement.innerHTML = '<p>Error mounting KPI Performance engine framework matrix.</p>';
       }
