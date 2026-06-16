@@ -57,40 +57,38 @@ export class DashboardReport {
     
     viewElement.innerHTML = '<div class="loading-spinner">Loading Analytical Performance Metrics...</div>';
     try {
-      // 1. Resolve the raw engine object or class from the module exports
-      const rawEngine = KPIModule.kpiEngine || KPIModule.default || KPIModule.KPILogicEngine || Object.values(KPIModule)[0];
-      
-      if (!rawEngine) {
+      // Direct lookups across module exports AND the global window namespace to handle non-exported setups
+      const kpiEngine = KPIModule.kpiEngine || 
+                        KPIModule.default || 
+                        window.kpiEngine || 
+                        window.kpiEngineInstance || 
+                        (typeof KPIModule === 'object' && Object.values(KPIModule).find(v => typeof v === 'object' || typeof v === 'function'));
+
+      if (!kpiEngine) {
         viewElement.innerHTML = '<p>Error mounting KPI Performance engine framework matrix.</p>';
         return;
       }
 
-      // 2. Safely get an executable instance (handle object vs class constructor)
-      let targetInstance = rawEngine;
-      if (typeof rawEngine === 'function') {
-        targetInstance = new rawEngine();
+      // Check for an executable method inside an object or instance
+      let executed = false;
+      const executableInstance = typeof kpiEngine === 'function' ? new kpiEngine() : kpiEngine;
+
+      // Prioritize explicit operational method matches, completely ignoring native system prototype keys
+      const explicitMethods = ['render', 'init', 'initEngine', 'mount'];
+      for (const methodName of explicitMethods) {
+        if (executableInstance && typeof executableInstance[methodName] === 'function') {
+          await executableInstance[methodName](viewElement);
+          executed = true;
+          break;
+        }
       }
 
-      // 3. Dynamically scan and execute the correct UI display method hook
-      if (typeof targetInstance.render === 'function') {
-        await targetInstance.render(viewElement);
-      } else if (typeof targetInstance.init === 'function') {
-        await targetInstance.init(viewElement);
-      } else if (typeof targetInstance.initEngine === 'function') {
-        await targetInstance.initEngine(viewElement);
-      } else if (typeof targetInstance.mount === 'function') {
-        await targetInstance.mount(viewElement);
-      } else {
-        // Fallback: search for any available method inside the engine object that looks like an initiator
-        const availableMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(targetInstance))
-          .concat(Object.keys(targetInstance))
-          .filter(prop => typeof targetInstance[prop] === 'function' && prop !== 'constructor');
-          
-        if (availableMethods.length > 0) {
-          console.log(`DashboardReport: Found alternative initialization method: ${availableMethods[0]}`);
-          await targetInstance[availableMethods[0]](viewElement);
+      if (!executed) {
+        // If it is a completely flat functional script or simple runner configuration block
+        if (typeof executableInstance === 'function') {
+          await executableInstance(viewElement);
         } else {
-          viewElement.innerHTML = '<p>Error: Resolved engine does not expose an initialization method context.</p>';
+          viewElement.innerHTML = '<p>Error: Resolved engine structure does not contain a valid UI rendering entry method.</p>';
         }
       }
     } catch (error) {
