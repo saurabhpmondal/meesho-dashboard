@@ -1,6 +1,6 @@
 // js/reports/dashboardReport.js
 
-import kpiEngine from '../engines/dashboard/kpiEngine.js';
+import * as KPIModule from '../engines/dashboard/kpiEngine.js';
 import { filterBar } from '../components/filterBar.js';
 
 export class DashboardReport {
@@ -29,7 +29,7 @@ export class DashboardReport {
           filterInstance.init(filterContainer, () => this.refreshData(contentContainer));
         }
       } catch (filterError) {
-        console.warn("DashboardReport: filterBar initialization skipped or warning encountered:", filterError);
+        console.warn("DashboardReport: filterBar initialization skipped:", filterError);
       }
     }
     
@@ -57,13 +57,17 @@ export class DashboardReport {
     
     viewElement.innerHTML = '<div class="loading-spinner">Loading Analytical Performance Metrics...</div>';
     try {
-      // Check both standard object execution or class instance instantiation patterns
+      // Resolve the actual engine instance dynamically from the wildcard namespace bundle
+      const kpiEngine = KPIModule.kpiEngine || KPIModule.default || KPIModule.KPILogicEngine || Object.values(KPIModule)[0];
+      
       if (kpiEngine) {
         if (typeof kpiEngine.render === 'function') {
           await kpiEngine.render(viewElement);
         } else if (typeof kpiEngine === 'function') {
           const engineInstance = new kpiEngine();
           await engineInstance.render(viewElement);
+        } else {
+          viewElement.innerHTML = '<p>Error: Resolved engine does not expose a render method context.</p>';
         }
       } else {
         viewElement.innerHTML = '<p>Error mounting KPI Performance engine framework matrix.</p>';
