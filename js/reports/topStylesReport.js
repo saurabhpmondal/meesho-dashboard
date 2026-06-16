@@ -1,10 +1,16 @@
-import { topStylesEngine } from '../engines/dashboard/topStylesEngine.js';
+// js/reports/topStylesReport.js
+
+import topStylesEngine from '../engines/dashboard/topStylesEngine.js';
 
 export class TopStylesReport {
   constructor() {
     this.container = null;
   }
 
+  /**
+   * Initializes and structures the Top Styles analytical execution viewport.
+   * @param {HTMLElement} targetContainer 
+   */
   async init(targetContainer) {
     this.container = targetContainer;
     this.renderLayout();
@@ -13,6 +19,9 @@ export class TopStylesReport {
     await this.loadStylesMatrix(styleViewGrid);
   }
 
+  /**
+   * Creates clean isolated structural wrappers for inventory ranking grids.
+   */
   renderLayout() {
     this.container.innerHTML = `
       <div class="styles-report-layout">
@@ -25,11 +34,22 @@ export class TopStylesReport {
     `;
   }
 
+  /**
+   * Connects back to the base analytics processing layout engine rulesets.
+   * @param {HTMLElement} elementWrapper 
+   */
   async loadStylesMatrix(elementWrapper) {
+    if (!elementWrapper) return;
     elementWrapper.innerHTML = '<div class="loading-spinner">Compiling Variant Conversion Data Sheets...</div>';
     try {
-      if (topStylesEngine && typeof topStylesEngine.render === 'function') {
-        await topStylesEngine.render(elementWrapper);
+      // Check both standard object execution or class instance instantiation patterns
+      if (topStylesEngine) {
+        if (typeof topStylesEngine.render === 'function') {
+          await topStylesEngine.render(elementWrapper);
+        } else if (typeof topStylesEngine === 'function') {
+          const engineInstance = new topStylesEngine();
+          await engineInstance.render(elementWrapper);
+        }
       } else {
         elementWrapper.innerHTML = '<p>The specific top catalog performance tracking module failed to compile links.</p>';
       }
