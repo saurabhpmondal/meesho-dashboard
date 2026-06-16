@@ -42,20 +42,41 @@ export class TopStylesReport {
     if (!elementWrapper) return;
     elementWrapper.innerHTML = '<div class="loading-spinner">Compiling Variant Conversion Data Sheets...</div>';
     try {
-      // Resolve the actual engine instance dynamically from the wildcard namespace bundle
-      const topStylesEngine = StylesModule.topStylesEngine || StylesModule.default || StylesModule.TopStylesLogicEngine || Object.values(StylesModule)[0];
+      // 1. Resolve the raw engine object or class from the module exports
+      const rawEngine = StylesModule.topStylesEngine || StylesModule.default || StylesModule.TopStylesLogicEngine || Object.values(StylesModule)[0];
       
-      if (topStylesEngine) {
-        if (typeof topStylesEngine.render === 'function') {
-          await topStylesEngine.render(elementWrapper);
-        } else if (typeof topStylesEngine === 'function') {
-          const engineInstance = new topStylesEngine();
-          await engineInstance.render(elementWrapper);
-        } else {
-          elementWrapper.innerHTML = '<p>Error: Resolved styles engine does not expose a render method context.</p>';
-        }
-      } else {
+      if (!rawEngine) {
         elementWrapper.innerHTML = '<p>The specific top catalog performance tracking module failed to compile links.</p>';
+        return;
+      }
+
+      // 2. Safely get an executable instance (handle object vs class constructor)
+      let targetInstance = rawEngine;
+      if (typeof rawEngine === 'function') {
+        targetInstance = new rawEngine();
+      }
+
+      // 3. Dynamically scan and execute the correct UI display method hook
+      if (typeof targetInstance.render === 'function') {
+        await targetInstance.render(elementWrapper);
+      } else if (typeof targetInstance.init === 'function') {
+        await targetInstance.init(elementWrapper);
+      } else if (typeof targetInstance.initEngine === 'function') {
+        await targetInstance.initEngine(elementWrapper);
+      } else if (typeof targetInstance.mount === 'function') {
+        await targetInstance.mount(elementWrapper);
+      } else {
+        // Fallback: search for alternative method descriptors
+        const availableMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(targetInstance))
+          .concat(Object.keys(targetInstance))
+          .filter(prop => typeof targetInstance[prop] === 'function' && prop !== 'constructor');
+          
+        if (availableMethods.length > 0) {
+          console.log(`TopStylesReport: Found alternative initialization method: ${availableMethods[0]}`);
+          await targetInstance[availableMethods[0]](elementWrapper);
+        } else {
+          elementWrapper.innerHTML = '<p>Error: Resolved styles engine does not expose an initialization method context.</p>';
+        }
       }
     } catch (error) {
       console.error("Styles Engine Critical Execution Error:", error);
