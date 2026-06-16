@@ -607,3 +607,50 @@ body {
     width: 100%;
 
 }
+
+/* Tab Navigation Row Structural Layout Configuration Styles */
+.tabs-nav-container {
+    background-color: var(--bg-surface, #ffffff);
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    padding: 0 1.5rem;
+}
+
+.tabs-navigation-bar .tabs-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+}
+
+.tabs-navigation-bar .tab-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0.5rem;
+    font-weight: 500;
+    color: var(--text-muted, #666666);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.tabs-navigation-bar .tab-item:hover {
+    color: var(--color-primary, #9f227e); /* Meesho Pink Brand Accents */
+}
+
+.tabs-navigation-bar .tab-item.active {
+    color: var(--color-primary, #9f227e);
+    border-bottom-color: var(--color-primary, #9f227e);
+}
+
+.tabs-navigation-bar .tab-icon {
+    font-size: 1.1rem;
+}
+
+/* Base View Layout Framework Spacing Constraints */
+.main-content-viewport {
+    padding: 1.5rem;
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+}
